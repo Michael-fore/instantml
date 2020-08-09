@@ -1,0 +1,21 @@
+{
+    "model":"GoogleNet",
+    "mode":"classify",
+    "key":"blahblah",
+    "images":[
+            {"data":{"label":"Image Identifier",
+                "value":"b64str"},
+               "parameters": {
+                    "top_k":5,
+                    "confidence_threshhold":70
+                    }
+                },
+              {"data":{"label":"Image Identifier",
+                        "value":"b64str"},
+                "parameters": {
+                    "top_k":5,
+                    "confidence_threshhold":70
+                    }
+                }
+            ] 
+}
