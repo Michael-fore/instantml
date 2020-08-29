@@ -3,7 +3,8 @@ import torchvision.models as models
 import torchvision.transforms as transform
 
 class ImageHandle:
-    '''TAkes care of img loading and sizing/transform. '''
+    '''TAkes care of img loading and sizing/transform. Most images will be b64 encoded 
+     as they will be reciever from api'''
     def __init__(self):
         self.loader = transform.Compose([    
                                         transform.Resize((500,500)),
@@ -12,7 +13,6 @@ class ImageHandle:
                                         std=[0.229, 0.224, 0.225])])
     def load(self, img):
         self.img = self.loader(img).unsqueeze(0) #add dummy dim for 3d to 4d
-
 
 class ImageModels(ImageHandle):
     '''Class prepares deep models for use, loads corrects answer sets, classifies.'''
