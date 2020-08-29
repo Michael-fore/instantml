@@ -1,7 +1,5 @@
-
-
-from Flask import flask
-from bluesprints.ai import bp as ai
+from flask import Flask
+from blueprints.ai import bp as ai
 
 app = Flask(__name__)
 
@@ -11,5 +9,7 @@ app = Flask(__name__)
 def index():
     return 'Hello World'
 
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0 ')

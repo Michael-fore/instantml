@@ -1,6 +1,6 @@
-from flask import Blueprint, render_templace, request
+from flask import Blueprint, render_template, request
 
-bp = Blueprint('images', url_prefix='/ai')
+bp = Blueprint('images', __name__,url_prefix='/ai')
 
 @bp.route('/', methods=['GET'])
 def index():
