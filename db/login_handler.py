@@ -11,7 +11,7 @@ import base64
 login_manager = flask_login.LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
-    return User(user_id).get()
+    return User.get_id(user_id)
 
 
 # Create, populate and persist an entity with keyID=1234
@@ -45,6 +45,10 @@ class Hasher:
         '''Generates password salte'''
         self.salt = os.urandom(32)
         return self.salt
+
+class Control:
+    '''future holder of crud for the user object'''
+    pass
 
 class User(Hasher):
     '''USer control, accepts email as 'key', if the email exists should contain
@@ -85,7 +89,6 @@ class User(Hasher):
         '''Creates account only if the email isn't used'''
         if self.exists():
             raise ValueError('Email already exists.')
-
         else:
             self.add('email',self.email)
             self.add('first_name', first)
@@ -110,28 +113,37 @@ class User(Hasher):
             raise ValueError('Can\'t delete non-existant account.')
     
     def add(self, key, value):
-        '''Just adds field to entity object from get_user func'''
+        '''Just adds field to entity object from get_user func. doesn't push to db'''
         self.entity[key] = value
+
+    def update(self, key, value):
+        '''Updates a field the pushes it to the db'''
+        self.user[key] = value
+        print(f'updated :{key, value}')
+        self.client.put(self.user)
 
     def new_api_key(self):
         '''Generates api key'''
         return hexlify(os.urandom(32))
     
-    def new_pass(self):
+    def new_pass(self, password):
         '''Create new password'''
-        pass
+        self.update('password', self.hashed(password))
 
     def get_password(self):
+        '''Retrieves password from db'''
         self.passw = self.obj.get('password')
     
     def split_salt(self): 
+        '''Password is stored in db and sha:salt'''
         self.get_password()      
         return self.passw.split(':')
     
     def verify_password(self, password):
+        ''' return true if the user password input + stored salt sha matches the
+        sha created on account creation'''
         sha, salt = self.split_salt()
-        salt = int(salt).to_bytes(32,byteorder="big")
-        
+        salt = int(salt).to_bytes(32, byteorder="big") #32 is the size for os.urand
         hashed = self.hash(password, salt = salt)
        
         if hashed == bytes(sha, 'utf-8'):
@@ -139,12 +151,13 @@ class User(Hasher):
         else:
             return False
         
-
+    
 
 user = User()
 user.get_id('Michael-fore@sbcglobal.net')
 #user.create('Michael','Fore','Hello_World')
 #user.delete()
 
-x = user.verify_password('Hello_world')
+x = user.verify_password('Cat')
+#user.new_pass('Cat')
 print(x)

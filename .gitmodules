@@ -1,0 +1,3 @@
+[submodule "models/submodules/vaderSentiment"]
+	path = models/submodules/vaderSentiment
+	url = https://github.com/cjhutto/vaderSentiment.git
